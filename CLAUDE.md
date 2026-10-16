@@ -65,6 +65,7 @@
 - Next.js (App Router) on Vercel Hobby. 별도 백엔드 없음.
   - 웹 UI → Server Action. 외부 클라이언트(CLI·CI, v2) → `app/api/v1/...` Route Handler + Bearer 토큰. Server Action을 외부 API로 쓰지 않는다.
 - Neon Postgres (무료, 유휴 시 자동 정지)
+- Next.js 16.4는 학습 데이터와 API·규칙이 다를 수 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 해당 문서를 읽는다. 패키지 관리는 pnpm(`corepack pnpm`)
 - 미정: ORM(Drizzle 후보), 메일(Resend 후보)
 
 ## 확정된 설계 (바꾸기 전에 사용자와 상의)

@@ -65,6 +65,7 @@
 - Next.js (App Router) on Vercel Hobby. 별도 백엔드 없음.
   - 웹 UI → Server Action. 외부 클라이언트(CLI·CI, v2) → `app/api/v1/...` Route Handler + Bearer 토큰. Server Action을 외부 API로 쓰지 않는다.
 - Neon Postgres (무료, 유휴 시 자동 정지)
+- Next.js 16.4는 학습 데이터와 API·규칙이 다를 수 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 해당 문서를 읽는다. 패키지 관리는 pnpm(`corepack pnpm`)
 - 미정: ORM(Drizzle 후보), 메일(Resend 후보)
 
 ## 확정된 설계 (바꾸기 전에 사용자와 상의)
@@ -137,3 +138,13 @@ Space (조직, 신청제, 초대 단위)
 - 브라우저에서 풀린 키는 IndexedDB의 꺼낼 수 없는 키로만 보관한다. `localStorage`·쿠키·URL에 키·코드·시드를 두지 않는다.
 - 로그·에러 메시지·에러 트래커에 시크릿 값·시드·접속 코드·운영자 코드·이메일을 남기지 않는다.
 - 파라미터 쿼리 / ORM만. 문자열 SQL 조립 금지.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
