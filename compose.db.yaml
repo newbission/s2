@@ -1,0 +1,29 @@
+# 6단계용: 로컬 Postgres를 붙인다. 프로토타입 기간에는 쓰지 않는다.
+#   docker compose -f compose.yaml -f compose.db.yaml up
+# 아래 비밀번호는 이 컨테이너 안에서만 쓰는 개발용 값이다 (실제 시크릿 아님).
+services:
+  app:
+    environment:
+      DATABASE_URL: postgres://s2:s2_local_dev@db:5432/s2
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: s2
+      POSTGRES_PASSWORD: s2_local_dev
+      POSTGRES_DB: s2
+    # 바깥 포트는 열지 않는다. 앱은 compose 네트워크로 붙고, 직접 보려면:
+    #   docker compose -f compose.yaml -f compose.db.yaml exec db psql -U s2
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U s2 -d s2"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:

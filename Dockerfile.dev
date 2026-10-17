@@ -1,0 +1,17 @@
+# 개발 전용 이미지. 실서비스는 Vercel이 직접 빌드하므로 이 파일을 쓰지 않는다.
+FROM node:24-bookworm-slim
+
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
+    NEXT_TELEMETRY_DISABLED=1
+
+WORKDIR /app
+
+# package.json의 packageManager에 적힌 pnpm 버전을 이미지에 미리 받아 둔다.
+COPY package.json ./
+RUN corepack enable && corepack install
+
+# 볼륨으로 덮일 폴더를 node 사용자 소유로 만들어 둔다 (새 볼륨이 이 소유권을 이어받음).
+RUN mkdir -p node_modules .next && chown -R node:node /app
+
+USER node
+EXPOSE 3000

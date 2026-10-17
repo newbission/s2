@@ -28,3 +28,16 @@
 - Next.js (App Router) on Vercel
 - Neon Postgres
 - 운영 비용 0원 (무료 플랜만 사용)
+
+## 개발 환경
+
+Docker Desktop만 있으면 어느 기기에서든 같은 환경(Node 24 + pnpm)으로 뜹니다.
+
+```sh
+docker compose up            # http://localhost:3000 (DB 없이 메모리 목업으로 동작)
+docker compose exec app pnpm lint
+docker compose down          # 멈춤 (볼륨의 패키지·캐시는 유지)
+```
+
+- 소스는 맥 폴더와 공유하고, `node_modules`·`.next`는 Docker 볼륨에 따로 둡니다.
+- 로컬 Postgres까지 띄우기 (실제 DB 구현 단계용): `docker compose -f compose.yaml -f compose.db.yaml up`
