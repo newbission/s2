@@ -26,13 +26,17 @@
 - **한 번에 한 단계, 한 산출물.** 끝나면 멈추고 리뷰를 기다린다. 승인 전에 다음 단계로 넘어가지 않는다. 커밋도 승인 후.
 - 문서를 낼 때: 임의로 정한 가정과 확인이 필요한 결정을 따로 목록으로.
 - 구현을 낼 때: 변경 요약 + 리뷰 포인트(특히 보안 규칙 해당 여부).
-- **구현은 작은 커밋 단위로.** 커밋 하나 = 리뷰 하나. 커밋하고 멈춰서 사용자 리뷰를 기다리고, 승인되면 다음 커밋으로 간다. 리뷰에서 나온 수정은 다음 커밋으로 (2단계부터).
+- **구현은 작은 커밋 단위로, main에 넣기 전에 리뷰** (2단계부터).
+  1. 개발 서버의 로컬 `review` 브랜치에 작은 커밋을 만든다. **GitHub에는 push하지 않는다.** 그리고 멈춰서 요약·리뷰 포인트를 보여준다.
+  2. 사용자는 자기 기기에서 서버 저장소를 원격(`server`)으로 받아 확인한다 (`git pull --ff-only server review` → `docker compose up`).
+  3. 승인되면 main을 `review`로 fast-forward하고 GitHub에 push. 수정 요청이면 `review`에 고친 커밋을 더한다 (`review` 기록은 고쳐 쓰지 않는다).
+  - **승인 없이 main에 넣거나 GitHub에 push하지 않는다.**
 - 이 파일·`notes/`에 없는 결정은 지어내지 말고 묻는다. 결정이 바뀌면 이 파일 갱신을 제안한다.
 
 ### 진행 순서
 
 1. `notes/PRD.md` 확정 (써봐야 알 수 있는 결정은 "프로토타입 후 결정"으로 미룬다)
-2. **프로토타입**: UI + 목업 데이터, Vercel 배포. main에 직접 push (부트스트랩)
+2. **프로토타입**: UI + 목업 데이터, Vercel 배포. 커밋마다 `review` 브랜치에서 사용자 승인 후 main에 push (PR 없이, 부트스트랩)
 3. 프로토타입 사용 결과로 PRD 보완
 4. `notes/ARCHITECTURE.md`(ADR) / `notes/THREAT_MODEL.md` / DB 스키마·API 설계
 5. **개발 파이프라인**: `CONTRIBUTING.md`, lint, CI, Claude 리뷰 필수 체크, `.claude/agents`·hooks. **이후 모든 변경은 PR**
@@ -65,7 +69,8 @@
 - Next.js (App Router) on Vercel Hobby. 별도 백엔드 없음.
   - 웹 UI → Server Action. 외부 클라이언트(CLI·CI, v2) → `app/api/v1/...` Route Handler + Bearer 토큰. Server Action을 외부 API로 쓰지 않는다.
 - Neon Postgres (무료, 유휴 시 자동 정지)
-- Next.js 16.4는 학습 데이터와 API·규칙이 다를 수 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 해당 문서를 읽는다. 패키지 관리는 pnpm(`corepack pnpm`)
+- Next.js 16.4는 학습 데이터와 API·규칙이 다를 수 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 해당 문서를 읽는다. 패키지 관리는 pnpm
+- 개발 환경은 Docker compose. 설치·실행·lint는 컨테이너 안에서: `docker compose up -d` 후 `docker compose exec app pnpm …`. 로컬 Postgres는 `compose.db.yaml`을 겹쳐서 (6단계)
 - 미정: ORM(Drizzle 후보), 메일(Resend 후보)
 
 ## 확정된 설계 (바꾸기 전에 사용자와 상의)
