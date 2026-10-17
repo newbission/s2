@@ -2,16 +2,19 @@
 FROM node:24-bookworm-slim
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
+    COREPACK_HOME=/opt/corepack \
     NEXT_TELEMETRY_DISABLED=1
 
 WORKDIR /app
 
 # package.json의 packageManager에 적힌 pnpm 버전을 이미지에 미리 받아 둔다.
 COPY package.json ./
-RUN corepack enable && corepack install
+RUN corepack enable && mkdir -p /opt/corepack node_modules .next \
+ && chown -R node:node /opt/corepack /app
 
-# 볼륨으로 덮일 폴더를 node 사용자 소유로 만들어 둔다 (새 볼륨이 이 소유권을 이어받음).
-RUN mkdir -p node_modules .next && chown -R node:node /app
-
+# 볼륨으로 덮일 폴더는 위에서 node 사용자 소유로 만들어 둔다 (새 볼륨이 이 소유권을 이어받음).
 USER node
+
+# pnpm(과 pnpm 12가 처음 실행 때 받는 실행 파일)을 이미지에 미리 받아 둔다 (뜰 때마다 다시 받지 않게).
+RUN corepack install && pnpm --version
 EXPOSE 3000
